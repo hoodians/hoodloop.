@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOODLOOP | Official Webstore</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-black selection:text-white">
+
+    <!-- Top Navigation Banner -->
+    <div id="guide-banner" class="bg-black text-white text-xs py-2.5 px-4 flex justify-between items-center z-50">
+        <div class="flex items-center space-x-2 overflow-hidden">
+            <span class="bg-white text-black font-black text-[10px] px-2 py-0.5 rounded tracking-widest uppercase shrink-0">STORE OWNER GUIDE</span>
+            <p class="truncate text-gray-300">Learn how to upload clothes, set ₱450 prices, mark items SOLD OUT, or delete items.</p>
+        </div>
+        <button onclick="toggleGuideModal()" class="underline font-bold text-xs hover:text-gray-300 ml-2 shrink-0">
+            Learn How
+        </button>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3.5 sm:px-8 flex items-center justify-between">
+        <!-- Left: Hamburger Menu -->
+        <button onclick="alert('Navigation Menu:\n• New Drops\n• Tees & Tops\n• Bottoms & Shorts\n• Outerwear')" class="p-1.5 hover:bg-gray-100 rounded-lg transition" aria-label="Open Menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Center: Brand Logo -->
+        <a href="#" class="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic font-mono">
+            HOOD<span class="text-zinc-500">LOOP</span>
+        </a>
+
+        <!-- Right: Actions & Cart -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <button onclick="toggleAdminModal()" class="flex items-center gap-1.5 text-xs font-extrabold bg-zinc-900 text-white px-3 py-2 rounded-lg hover:bg-zinc-800 transition shadow-sm">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Manage Store</span>
+            </button>
+            <button onclick="toggleCartModal()" class="p-2 hover:bg-gray-100 rounded-lg transition relative" aria-label="Cart">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span id="cart-count" class="absolute top-0 right-0 bg-black text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-grow">
+        <!-- Section Title & Management Controls -->
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-100">
+            <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">HOODLOOP CATALOG</span>
+                <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight">New Drops</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleGuideModal()" class="flex items-center gap-1.5 text-xs font-semibold bg-gray-100 text-gray-800 px-3 py-2 rounded-lg hover:bg-gray-200 transition">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span>Tutorial</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2-Column Mobile Grid, 3/4-Column Desktop Grid -->
+        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+            <!-- Dynamic product cards will render here -->
+        </div>
+    </main>
+
+    <!-- Floating 'Message Us' Button (Matching Reference UI) -->
+    <div class="fixed bottom-5 right-5 z-30">
+        <button onclick="alert('Message feature simulated! Connect this button to your Instagram DM or Facebook Messenger page.')" class="bg-zinc-900 text-white shadow-2xl px-4 py-3 rounded-full font-semibold text-xs sm:text-sm flex items-center space-x-2 hover:bg-zinc-800 transition transform hover:scale-105 active:scale-95 border border-zinc-700">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+            <span>Message us</span>
+        </button>
+    </div>
+
+    <!-- Shopping Bag Drawer / Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col justify-between p-6 shadow-2xl">
+            <div>
+                <div class="flex justify-between items-center pb-4 border-b border-gray-200">
+                    <h2 class="text-lg font-extrabold uppercase tracking-tight">Shopping Bag</h2>
+                    <button onclick="toggleCartModal()" class="p-1 hover:bg-gray-100 rounded">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="cart-items" class="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                    <!-- Cart items -->
+                </div>
+            </div>
+            <div class="border-t border-gray-200 pt-4 space-y-3">
+                <div class="flex justify-between font-bold text-base">
+                    <span>Subtotal:</span>
+                    <span id="cart-total">₱0.00</span>
+                </div>
+                <button onclick="alert('Order placed successfully! Connect your GCash or Maya payment link here.')" class="w-full bg-black text-white font-bold py-3.5 rounded-lg uppercase tracking-wider text-xs hover:bg-zinc-800 transition">
+                    Checkout Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Management / Admin Dashboard Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="toggleAdminModal()" class="absolute top-4 right-4 p-1.5 hover:bg-gray-100 rounded-full">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="mb-4 pb-3 border-b border-gray-100">
+                <h2 class="text-xl font-black uppercase tracking-tight">Store Manager Portal</h2>
+                <p class="text-xs text-gray-500">Upload new items, change prices, toggle Sold Out status, or delete products.</p>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-8 pr-1">
+                <!-- Form 1: Add New Product -->
+                <form id="add-product-form" onsubmit="handleAddProduct(event)" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Add New Clothes / Apparel
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Item Title</label>
+                            <input type="text" id="prod-name" placeholder="e.g., HOODLOOP Heavy Hoodie" required class="w-full border border-gray-300 rounded-lg p-2.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Price (₱)</label>
+                            <input type="number" id="prod-price" value="450" step="1" required class="w-full border border-gray-300 rounded-lg p-2.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Product Photo</label>
+                        <input type="file" id="prod-file" accept="image/*" onchange="previewImage(event)" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-zinc-900 file:text-white hover:file:bg-zinc-800">
+                    </div>
+
+                    <!-- Photo Preview Box -->
+                    <div id="preview-container" class="hidden">
+                        <span class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Image Preview:</span>
+                        <div class="w-full h-32 bg-white rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden p-2">
+                            <img id="image-preview" src="" class="h-full object-contain">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-black text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-wider hover:bg-zinc-800 transition">
+                        + Add Item to Webstore
+                    </button>
+                </form>
+
+                <!-- List 2: Existing Product Manager (Mark Sold Out / Delete) -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-wider text-gray-700 mb-3 flex items-center gap-1.5">
+                        <i data-lucide="boxes" class="w-4 h-4"></i> Manage Inventory
+                    </h3>
+                    <div id="admin-inventory-list" class="space-y-2">
+                        <!-- Admin products listed here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step-by-Step Tutorial Guide Modal -->
+    <div id="guide-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-xl p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="toggleGuideModal()" class="absolute top-4 right-4 p-1.5 hover:bg-gray-100 rounded-full">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h2 class="text-xl font-black uppercase tracking-tight mb-2">📖 Seller Tutorial: HOODLOOP Store</h2>
+            <p class="text-xs text-gray-600 mb-6">Learn how to easily add clothing photos, change prices, toggle Sold Out badges, or delete items.</p>
+
+            <div class="space-y-5 text-xs">
+                <!-- Tutorial 1 -->
+                <div class="border-l-4 border-black pl-4">
+                    <h3 class="font-extrabold text-black uppercase text-sm">1. How to Add New Clothes</h3>
+                    <p class="text-gray-600 mt-1">
+                        • Click the <strong>"Manage Store"</strong> button in the navigation header.<br>
+                        • Enter your apparel title (e.g., <em>HOODLOOP Retro Shorts</em>).<br>
+                        • Price is pre-filled at <strong>₱450.00</strong> (you can change it if needed).<br>
+                        • Choose a photo of your clothes from your smartphone or computer, then click <strong>Add Item</strong>!
+                    </p>
+                </div>
+
+                <!-- Tutorial 2 -->
+                <div class="border-l-4 border-black pl-4">
+                    <h3 class="font-extrabold text-black uppercase text-sm">2. How to Mark an Item as "SOLD OUT"</h3>
+                    <p class="text-gray-600 mt-1">
+                        • Open <strong>Manage Store</strong>.<br>
+                        • Scroll to <strong>Manage Inventory</strong>.<br>
+                        • Click the <strong>"Mark Sold Out"</strong> button next to any item.<br>
+                        • A bold <strong>"SOLD OUT"</strong> badge will overlay on the image and disable purchasing for customers. You can click it again anytime to mark it back <strong>In Stock</strong>.
+                    </p>
+                </div>
+
+                <!-- Tutorial 3 -->
+                <div class="border-l-4 border-black pl-4">
+                    <h3 class="font-extrabold text-black uppercase text-sm">3. How to Delete / Remove Products</h3>
+                    <p class="text-gray-600 mt-1">
+                        • Open <strong>Manage Store</strong>.<br>
+                        • Click the red <strong>"Delete"</strong> button next to the product you want to remove.
+                    </p>
+                </div>
+
+                <!-- Tutorial 4 -->
+                <div class="border-l-4 border-black pl-4">
+                    <h3 class="font-extrabold text-black uppercase text-sm">4. Automatic Saving</h3>
+                    <p class="text-gray-600 mt-1">
+                        • All products, prices, sold-out statuses, and uploaded images are automatically saved in your browser's local memory (LocalStorage).
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="toggleGuideModal()" class="w-full bg-black text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider hover:bg-zinc-800 transition mt-6">
+                Got it, Take Me to Store
+            </button>
+        </div>
+    </div>
+
+    <!-- Store Footer -->
+    <footer class="bg-zinc-900 text-white text-center py-8 px-4 mt-12 text-xs border-t border-zinc-800">
+        <p class="font-black text-sm tracking-widest uppercase mb-1">HOODLOOP</p>
+        <p class="text-zinc-400 mb-4">Official Philippine Streetwear Store</p>
+        <div class="flex justify-center space-x-4 text-zinc-400 text-[11px] mb-4">
+            <a href="#" class="hover:text-white">Shipping Policy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white">Size Chart</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white">Contact Us</a>
+        </div>
+        <p class="text-zinc-600 text-[10px]">&copy; 2026 HOODLOOP. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Default seed clothing items with default 450 prices
+        const initialProducts = [
+            {
+                id: 101,
+                name: "Trey ZBO Retro Shorts",
+                price: 450.00,
+                isSoldOut: false,
+                image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300' fill='none'><rect width='300' height='300' fill='%23f4f4f5'/><path d='M80 80 L220 80 L235 220 L155 220 L150 140 L145 220 L65 220 Z' fill='%2393c5fd'/><path d='M80 80 L110 80 L100 220 L65 220 Z' fill='%231e3a8a'/><path d='M220 80 L190 80 L200 220 L235 220 Z' fill='%231e3a8a'/><text x='150' y='180' fill='%231e3a8a' font-size='10' font-weight='bold' text-anchor='middle' font-family='sans-serif'>HOODLOOP</text></svg>"
+            },
+            {
+                id: 102,
+                name: "Trey JWILL Retro Shorts",
+                price: 450.00,
+                isSoldOut: false,
+                image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300' fill='none'><rect width='300' height='300' fill='%23f4f4f5'/><path d='M80 80 L220 80 L235 220 L155 220 L150 140 L145 220 L65 220 Z' fill='%23991b1b'/><path d='M80 80 L110 80 L100 220 L65 220 Z' fill='%23000000'/><path d='M220 80 L190 80 L200 220 L235 220 Z' fill='%23000000'/><text x='150' y='180' fill='%23ffffff' font-size='10' font-weight='bold' text-anchor='middle' font-family='sans-serif'>HOODLOOP</text></svg>"
+            },
+            {
+                id: 103,
+                name: "Trey GRANGER Retro Shorts",
+                price: 450.00,
+                isSoldOut: true,
+                image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300' fill='none'><rect width='300' height='300' fill='%23f4f4f5'/><path d='M80 80 L220 80 L235 220 L155 220 L150 140 L145 220 L65 220 Z' fill='%23d97706'/><path d='M80 80 L110 80 L100 220 L65 220 Z' fill='%231e3a8a'/><path d='M220 80 L190 80 L200 220 L235 220 Z' fill='%231e3a8a'/><text x='150' y='180' fill='%23ffffff' font-size='10' font-weight='bold' text-anchor='middle' font-family='sans-serif'>HOODLOOP</text></svg>"
+            },
+            {
+                id: 104,
+                name: "BADGES Mesh Shorts",
+                price: 450.00,
+                isSoldOut: false,
+                image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300' fill='none'><rect width='300' height='300' fill='%23f4f4f5'/><path d='M80 80 L220 80 L235 220 L155 220 L150 140 L145 220 L65 220 Z' fill='%23be185d'/><circle cx='120' cy='140' r='15' fill='%23facc15'/><circle cx='180' cy='160' r='12' fill='%2338bdf8'/><text x='150' y='195' fill='%23ffffff' font-size='10' font-weight='bold' text-anchor='middle' font-family='sans-serif'>HOODLOOP</text></svg>"
+            }
+        ];
+
+        // Load saved products or default
+        let products = JSON.parse(localStorage.getItem('hoodloop_products')) || initialProducts;
+        let cart = [];
+        let currentUploadedImage = null;
+
+        // Save state to LocalStorage
+        function saveProducts() {
+            localStorage.setItem('hoodloop_products', JSON.stringify(products));
+        }
+
+        // Render Products onto Webstore Grid
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'group flex flex-col items-center text-center select-none';
+
+                // Image Wrapper & Overlay Badge
+                const isSoldOut = product.isSoldOut;
+                
+                card.innerHTML = `
+                    <div class="w-full aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3 flex items-center justify-center relative border border-gray-100 ${isSoldOut ? '' : 'group-hover:border-black'} transition">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-contain ${isSoldOut ? 'opacity-40 grayscale' : 'group-hover:scale-105'} transition duration-300">
+                        
+                        ${isSoldOut ? `
+                            <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                <span class="bg-black text-white text-[10px] sm:text-xs font-black px-3 py-1.5 uppercase tracking-widest rounded-md shadow-lg">
+                                    SOLD OUT
+                                </span>
+                            </div>
+                        ` : `
+                            <button onclick="addToCart(${product.id})" class="absolute bottom-2 inset-x-2 bg-black text-white text-[11px] font-bold py-2 rounded-lg opacity-0 group-hover:opacity-100 transition shadow-md hover:bg-zinc-800">
+                                + Add to Bag
+                            </button>
+                        `}
+                    </div>
+                    
+                    <h3 class="font-bold text-xs sm:text-sm text-gray-900 line-clamp-1">${product.name}</h3>
+                    <p class="font-extrabold text-xs text-gray-800 mt-1">₱${product.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+                    
+                    ${isSoldOut ? `
+                        <span class="text-[10px] font-bold text-red-600 uppercase mt-1">Out of Stock</span>
+                    ` : `
+                        <button onclick="addToCart(${product.id})" class="sm:hidden text-[10px] font-extrabold underline text-black mt-1">
+                            Add to Bag
+                        </button>
+                    `}
+                `;
+                grid.appendChild(card);
+            });
+
+            renderAdminInventoryList();
+        }
+
+        // Render Inventory list inside Admin Panel
+        function renderAdminInventoryList() {
+            const list = document.getElementById('admin-inventory-list');
+            list.innerHTML = '';
+
+            if (products.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">No products in inventory.</p>';
+                return;
+            }
+
+            products.forEach(product => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs gap-2';
+                row.innerHTML = `
+                    <div class="flex items-center space-x-2 overflow-hidden">
+                        <img src="${product.image}" class="w-10 h-10 object-contain bg-white rounded border border-gray-200 shrink-0">
+                        <div class="truncate">
+                            <h4 class="font-bold truncate">${product.name}</h4>
+                            <p class="text-gray-500 font-semibold">₱${product.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="toggleSoldOut(${product.id})" class="px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition ${product.isSoldOut ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300'}">
+                            ${product.isSoldOut ? 'Mark In Stock' : 'Mark Sold Out'}
+                        </button>
+                        <button onclick="deleteProduct(${product.id})" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition" title="Delete Product">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        // Toggle Sold Out status
+        function toggleSoldOut(id) {
+            products = products.map(p => {
+                if (p.id === id) {
+                    return { ...p, isSoldOut: !p.isSoldOut };
+                }
+                return p;
+            });
+            saveProducts();
+            renderProducts();
+        }
+
+        // Delete Product
+        function deleteProduct(id) {
+            if (confirm("Are you sure you want to remove this clothing item from your HOODLOOP store?")) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                renderProducts();
+            }
+        }
+
+        // Image file preview logic
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUploadedImage = e.target.result;
+                    document.getElementById('image-preview').src = currentUploadedImage;
+                    document.getElementById('preview-container').classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Form Submit: Add Product
+        function handleAddProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('prod-name').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+
+            if (!currentUploadedImage) {
+                alert('Please upload a photo of your clothing item!');
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                isSoldOut: false,
+                image: currentUploadedImage
+            };
+
+            products.unshift(newProduct);
+            saveProducts();
+            renderProducts();
+
+            // Reset Form State
+            document.getElementById('add-product-form').reset();
+            document.getElementById('preview-container').classList.add('hidden');
+            currentUploadedImage = null;
+
+            alert('✨ New item published to your webstore!');
+        }
+
+        // Cart Logic
+        function addToCart(productId) {
+            const prod = products.find(p => p.id === productId);
+            if (prod && !prod.isSoldOut) {
+                cart.push(prod);
+                updateCartUI();
+                toggleCartModal();
+            }
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+
+            let total = 0;
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">Your bag is currently empty.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'flex items-center space-x-3 border-b border-gray-100 pb-3';
+                    itemEl.innerHTML = `
+                        <img src="${item.image}" class="w-12 h-12 rounded bg-gray-50 object-contain border border-gray-100">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold">${item.name}</h4>
+                            <p class="text-xs text-gray-500">₱${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold">Remove</button>
+                    `;
+                    container.appendChild(itemEl);
+                });
+            }
+            document.getElementById('cart-total').innerText = `₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // Modal Helpers
+        function toggleCartModal() {
+            document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        function toggleAdminModal() {
+            document.getElementById('admin-modal').classList.toggle('hidden');
+        }
+
+        function toggleGuideModal() {
+            document.getElementById('guide-modal').classList.toggle('hidden');
+        }
+
+        // Window load initialization
+        window.onload = function() {
+            lucide.createIcons();
+            renderProducts();
+        };
+    </script>
+</body>
+</html>
